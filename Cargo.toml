@@ -1,0 +1,15 @@
+[package]
+name = "ua-job-parser"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+env_logger = "0.10.0"
+log = "0.4.17"
+reqwest = { version = "0.11.16", features = ["json", "cookies"] }
+scraper = "0.15.0"
+serde = "1.0.159"
+serde_json = "1.0.95"
+tokio = { version = "1.27.0", features = ["full"] }
