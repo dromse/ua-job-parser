@@ -9,8 +9,8 @@ Simple parser for gathering vacancies from ukranian job websites.
 - in Cargo.toml
 ```
 [dependencies]
-tokio = "1.27.0"
-ua-job-parser = "0.1.0"
+tokio = "*"
+ua-job-parser = "*"
 ```
 
 - or use `cargo-add`
@@ -21,23 +21,26 @@ cargo add tokio ua-job-parser
 ## Usage
 
 ```rust
-use ua_job_parser::{dou, Vacancy};
+use ua_job_parser::{dou, robota, Vacancy};
 
 #[tokio::main]
 async fn main() {
-    // return list of vacancies from dou
-    // if nothing was found, return empty list
-    let vacancies: Vec<Vacancy> = dou::parse_vacancies("rust developer").await; 
+    let query = "rust developer";
 
-    println!("Founded vacancies: {:#?}", vacancies);
+    // return list of vacancies
+    // if nothing was found, return empty list
+    let dou_vacancies: Vec<Vacancy> = dou::parse_vacancies(query).await; 
+    let robota_vacancies: Vec<Vacancy> = robota::parse_vacancies(query).await; 
+
+    println!("Founded vacancies from dou: {:#?}", dou_vacancies);
+    println!("Founded vacancies from robota: {:#?}", robota_vacancies);
 }
 ```
 
 ## TODO
 
 - [x] implement parser for dou
-- [ ] implement parser for jooble
-- [ ] implement parser for robota
+- [x] implement parser for robota (upd. use api.robota.ua instead of parsing html)
 - [ ] implement parser for work
 
 ## Contribution

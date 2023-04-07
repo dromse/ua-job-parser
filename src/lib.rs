@@ -19,3 +19,4 @@ pub struct Vacancy {
 }
 
 pub mod dou;
+pub mod robota;
