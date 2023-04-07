@@ -66,7 +66,7 @@ pub async fn parse_vacancies(query: &str) -> Vec<Vacancy> {
             ("count", offset.as_str()),
         ];
 
-        let res = client
+        let json_response = client
             .post(format!(
                 "https://jobs.dou.ua/vacancies/xhr-load/?search={query}"
             ))
@@ -78,7 +78,7 @@ pub async fn parse_vacancies(query: &str) -> Vec<Vacancy> {
             .await
             .unwrap();
 
-        let ajax_body = res["html"].as_str().unwrap();
+        let ajax_body = json_response["html"].as_str().unwrap();
 
         let ajax_fragment = Html::parse_fragment(ajax_body);
 
@@ -116,17 +116,17 @@ pub async fn parse_vacancies(query: &str) -> Vec<Vacancy> {
                 .to_string();
 
             let description;
-            let mut element_description =
+            let mut description_element =
                 ajax_element.select(&description_selector);
 
-            if element_description.clone().count() == 0 {
+            if description_element.clone().count() == 0 {
                 warn!(
                     "Description for '{position}' from '{company}' wasn't \
                      found."
                 );
                 description = String::new();
             } else {
-                description = element_description
+                description = description_element
                     .next()
                     .unwrap()
                     .inner_html()
@@ -137,38 +137,38 @@ pub async fn parse_vacancies(query: &str) -> Vec<Vacancy> {
             }
 
             let salary;
-            let mut element_salary = ajax_element.select(&salary_selector);
+            let mut salary_element = ajax_element.select(&salary_selector);
 
-            if element_salary.clone().count() == 0 {
+            if salary_element.clone().count() == 0 {
                 warn!(
                     "Salary for '{position}' from '{company}' wasn't found."
                 );
-                salary = String::new();
+                salary = String::from("0");
             } else {
-                salary = element_salary.next().unwrap().inner_html();
+                salary = salary_element.next().unwrap().inner_html();
             }
 
             let date;
-            let mut element_date = ajax_element.select(&date_selector);
+            let mut date_element = ajax_element.select(&date_selector);
 
-            if element_date.clone().count() == 0 {
+            if date_element.clone().count() == 0 {
                 warn!("Date for '{position}' from '{company}' wasn't found.");
                 date = String::new();
             } else {
-                date = element_date.next().unwrap().inner_html();
+                date = date_element.next().unwrap().inner_html();
             }
 
             let location;
-            let mut element_location = ajax_element.select(&location_selector);
+            let mut location_element = ajax_element.select(&location_selector);
 
-            if element_location.clone().count() == 0 {
+            if location_element.clone().count() == 0 {
                 warn!(
                     "Location for '{position}' from '{company}' wasn't found."
                 );
 
                 location = String::new();
             } else {
-                location = element_location.next().unwrap().inner_html();
+                location = location_element.next().unwrap().inner_html();
             }
 
             vacancies.push(Vacancy {
